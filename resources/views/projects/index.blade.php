@@ -18,24 +18,24 @@
                 </tr>
             </thead>
             <tbody>
-        @foreach ($tasks as $task)
+        @foreach ($projects as $project)
             <tr>
                 <td>
-                    {{ $task->id }}
+                    {{ $project->id }}
                 </td>
                 <td>
-                    {{ $task->name }}
+                    {{ $project->name }}
                 </td>
                 <td>
                     {{ Form::open([
-                        'route' => ['tasks.destroy', $task->id],
+                        'route' => ['projects.destroy', $project->id],
                         'method' => 'DELETE'
                     ]) }}
                     {{ Form::submit('delete', ['class' => 'btn btn-danger']) }}
                     {{ Form::close() }}
                 </td>
                 <td>
-                    <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary">Edit Task</a>
+                    <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-primary">Edit Project</a>
                 </td>
             </tr>
         @endforeach

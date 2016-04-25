@@ -5,18 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-
-use App\Category;
-use App\Task;
+// Database model
 use App\Project;
-use App\Priority;
-use App\Status;
-use App\User;
-
-// use session for session flash
+// Sessions, used for message flashes on delete, etc
 use Session;
 
-class TaskController extends Controller
+
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +20,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('tasks.index', ['tasks' =>Task::all()]);
+        return view('projects.index',
+            ['projects' => Project::all()]
+        );
     }
 
     /**
@@ -35,16 +32,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks.create',  [
-            'categories' => Category::lists('name', 'id'),
-            'priorities' => Priority::lists('name', 'id'),
-            'statuses' => Status::lists('name', 'id'),
-            // We need to turn this into an array, not an object in order to allow nullable values
-            // to do this, we call the "all()" function
-            'tasks' => Task::lists('name', 'id')->all(),
-            'users' => User::lists('name', 'id'),
-            'projects' => Project::lists('name', 'id'),
-        ]);
+        return view('projects.create');
     }
 
     /**
@@ -58,26 +46,16 @@ class TaskController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255',
             'description' => '',
-            'priority' => 'int',
-            'status' => 'int',
-            'parent' => 'int',
-            'category' => 'int',
-            'user' => 'int'
         ]);
 
-        $task = new Task();
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->priority_id = $request->input('priority');
-        $task->status_id = $request->input('status');
-        $task->task_id = $request->input('parent');
-        $task->category_id = $request->input('category');
-        $task->user_id = $request->input('user');
-        $task->save();
+        $project = new Project();
+        $project->name = $request->input('name');
+        $project->description = $request->input('description');
+        $project->save();
 
-        Session::flash('flash_message', 'Task successfully saved!');
+        Session::flash('flash_message', 'Project successfully saved!');
 
-        return redirect()->route('tasks.index');
+        return redirect()->route('projects.index');
     }
 
     /**
@@ -88,7 +66,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('projects.show',
+            Project::findOrFail($id)
+        );
     }
 
     /**
@@ -122,6 +102,12 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $project = Project::findOrFail($id);
+
+        $project->delete();
+
+        Session::flash('flash_message', 'Project successfully deleted!');
+
+        return redirect()->route('projects.index');
     }
 }

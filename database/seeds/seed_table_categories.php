@@ -12,7 +12,27 @@ class seed_table_categories extends Seeder
     public function run()
     {
         DB::table('categories')->insert([
-            'name' => 'sample',
+            'name' => 'frontend',
+            'active' => true
+        ]);
+
+        DB::table('categories')->insert([
+            'name' => 'backend',
+            'active' => true
+        ]);
+
+        DB::table('categories')->insert([
+            'name' => 'database',
+            'active' => true
+        ]);
+
+        DB::table('categories')->insert([
+            'name' => 'support',
+            'active' => true
+        ]);
+
+        DB::table('categories')->insert([
+            'name' => 'administration',
             'active' => true
         ]);
     }

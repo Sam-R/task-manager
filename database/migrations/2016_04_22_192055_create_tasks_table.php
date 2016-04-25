@@ -20,7 +20,7 @@ class CreateTasksTable extends Migration
             $table->integer('priority_id');
             $table->integer('status_id');
             $table->integer('task_id')->nullable();
-            $table->integer('category_id');
+            $table->integer('category_id')->nullable();
             $table->integer('project_id');
             $table->boolean('active')->default(TRUE);
             $table->timestamps();
