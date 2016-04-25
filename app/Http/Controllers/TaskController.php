@@ -25,7 +25,14 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('tasks.index', ['tasks' =>Task::all()]);
+        // We can't add any tasks without at least one project. Force the user to create a project if none exist.
+        $projects = Project::all();
+        if (count($projects) > 0) {
+            return view('tasks.index', ['tasks' =>Task::with('children', 'status', 'priority', 'category', 'project')->get()]);
+        } else {
+            Session::flash('flash_message', 'Please create a Project before adding tasks!');
+            return redirect()->route('projects.index');
+        }
     }
 
     /**
@@ -41,7 +48,9 @@ class TaskController extends Controller
             'statuses' => Status::lists('name', 'id'),
             // We need to turn this into an array, not an object in order to allow nullable values
             // to do this, we call the "all()" function
-            'tasks' => Task::lists('name', 'id')->all(),
+            // Since it's going to make the UI so much easier without infinite children,
+            // just load the tasks with no parents.
+            'tasks' => ['' => 'None'] + Task::where('task_id', '=', null)->lists('name', 'id')->all(),
             'users' => User::lists('name', 'id'),
             'projects' => Project::lists('name', 'id'),
         ]);
@@ -62,7 +71,8 @@ class TaskController extends Controller
             'status' => 'int',
             'parent' => 'int',
             'category' => 'int',
-            'user' => 'int'
+            'user' => 'int',
+            'project' => 'required|int'
         ]);
 
         $task = new Task();
@@ -73,6 +83,7 @@ class TaskController extends Controller
         $task->task_id = $request->input('parent');
         $task->category_id = $request->input('category');
         $task->user_id = $request->input('user');
+        $task->project_id = $request->input('project');
         $task->save();
 
         Session::flash('flash_message', 'Task successfully saved!');
@@ -88,7 +99,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        $task = Task::with('project', 'priority', 'status', 'user')->find($id);
+
+        return view('tasks.show', ['task' => $task]);
     }
 
     /**
@@ -122,6 +135,12 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $task = Task::findOrFail($id);
+
+        $task->delete();
+
+        Session::flash('flash_message', 'Task successfully deleted!');
+
+        return redirect()->route('tasks.index');
     }
 }

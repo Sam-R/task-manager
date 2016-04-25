@@ -8,33 +8,33 @@ class Task extends Model
 {
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo('App\User');
     }
 
     public function category() {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo('App\Category');
     }
 
     public function priority() {
-        return $this->belongsTo('Priority::class');
+        return $this->belongsTo('App\Priority');
     }
 
     public function status() {
-        return $this->belongsTo('Status::class');
+        return $this->belongsTo('App\Status');
     }
 
     public function parent()
     {
-        return $this->belongsTo('Task::class');
+        return $this->belongsTo('App\Task');
     }
 
     public function children()
     {
-        return $this->hasMany('Task::class');
+        return $this->hasMany('App\Task');
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo('App\Project');
     }
 }

@@ -9,33 +9,65 @@
         @include('errors.errors')
 
 
-        {!! Form::open(array('action' => 'TaskController@store')) !!}
+        {!! Form::open(array('action' => 'TaskController@store', 'class' => 'form-horizontal')) !!}
 
-        {!! Form::label('name', 'Task Name', ['class' => 'control-label']) !!}
-        {!! Form::text('name', null, ['class' => 'form-control']) !!}
+        <div class="form-group">
+            {!! Form::label('name', ' Name', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {!! Form::text('name', null, ['class' => 'form-control']) !!}
+            </div>
+        </div>
 
-        {!! Form::label('description', 'Task description', ['class' => 'control-label']) !!}
-        {!! Form::textarea('description', null, ['class' => 'form-control']) !!}
+        <div class="form-group">
+            {!! Form::label('description', 'Description', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {!! Form::textarea('description', null, ['class' => 'form-control']) !!}
+            </div>
+        </div>
 
-        {!! Form::label('status', 'Task Status', ['class' => 'control-label']) !!}
-        {{ Form::select('status', $statuses), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('parent', 'Parent Task', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('parent', $tasks, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {!! Form::label('priority', 'Task Priority', ['class' => 'control-label']) !!}
-        {{ Form::select('priority', $priorities), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('user', 'Owner/Assignee', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('user', $users, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {!! Form::label('category', 'Task Category', ['class' => 'control-label']) !!}
-        {{ Form::select('category', $categories), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('status', 'Status', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('status', $statuses, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {!! Form::label('project', 'Task Project', ['class' => 'control-label']) !!}
-        {{ Form::select('project', $projects), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('priority', 'Priority', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('priority', $priorities, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {!! Form::label('task', 'Parent Task', ['class' => 'control-label']) !!}
-        {{ Form::select('task', ['' => 'None'] +  $tasks), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('category', 'Category', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('category', $categories, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {!! Form::label('user', 'Owner Task', ['class' => 'control-label']) !!}
-        {{ Form::select('user', $users), null, ['class' => 'form-control'] }}
+        <div class="form-group">
+            {!! Form::label('project', 'Project', ['class' => 'control-label col-sm-2']) !!}
+            <div class="col-sm-10">
+                {{ Form::select('project', $projects, null, ['class' => 'form-control']) }}
+            </div>
+        </div>
 
-        {{ Form::submit('Save Task', ['class' => 'btn btn-primary']) }}
+        {{ Form::submit('Save Task', ['class' => 'btn btn-primary pull-right']) }}
 
         {!! Form::close() !!}
 

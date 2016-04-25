@@ -20,9 +20,15 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return view('projects.index',
-            ['projects' => Project::all()]
-        );
+        $projects = Project::all();
+        if (count($projects) > 0)
+        {
+            return view('projects.index',
+                ['projects' => $projects]
+            );
+        } else {
+            return view('projects.create');
+        }
     }
 
     /**
@@ -66,9 +72,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return view('projects.show',
-            Project::findOrFail($id)
-        );
+        $project = Project::with('tasks', 'tasks.priority', 'tasks.status', 'tasks.user')->find($id);
+
+        return view('projects.show', ['project' => $project]);
     }
 
     /**

@@ -7,6 +7,7 @@
     <div class="panel-body">
         <!-- Display Validation Errors -->
         @include('errors.errors')
+        @include('messages.flash')
 
         <table class="table">
             <thead>
@@ -24,7 +25,9 @@
                     {{ $project->id }}
                 </td>
                 <td>
-                    {{ $project->name }}
+                    <a href="{{ route('projects.show', $project->id)}}">
+                        {{ $project->name }}
+                    </a>
                 </td>
                 <td>
                     {{ Form::open([
