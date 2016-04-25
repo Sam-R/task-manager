@@ -4,26 +4,27 @@
 
     <!-- Bootstrap Boilerplate... -->
 
-    <div class="panel-body">
+    <div class="container">
         <!-- Display Validation Errors -->
         @include('errors.errors')
         @include('messages.flash')
 
         {!!
-            Form::model( $project, [
+            Form::model( $task, [
                 'method' => 'PATCH',
-                'action' => ['ProjectController@update', $project->id]
+                'action' => ['TaskController@update', $task->id],
+                'class' => 'form-horizontal'
             ])
         !!}
 
-            @include('projects._fields')
+        @include('tasks._fields')
 
-            {{ Form::submit('Save Project', ['class' => 'btn btn-primary pull-right']) }}
+        {{ Form::submit('Save Task', ['class' => 'btn btn-primary pull-right']) }}
 
         {!! Form::close() !!}
 
         {{ Form::open([
-            'route' => ['projects.destroy', $project->id],
+            'route' => ['tasks.destroy', $task->id],
             'method' => 'DELETE'
         ]) }}
             {{ Form::submit('delete', ['class' => 'btn btn-danger']) }}

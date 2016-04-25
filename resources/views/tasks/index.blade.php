@@ -9,6 +9,8 @@
         @include('errors.errors')
         @include('messages.flash')
 
+        <a href="{{ route('tasks.create') }}" class="pull-right btn btn-primary">New Task</a>
+        
         <table class="table">
             <thead>
                 <tr>

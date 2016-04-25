@@ -50,7 +50,7 @@ class TaskController extends Controller
             // to do this, we call the "all()" function
             // Since it's going to make the UI so much easier without infinite children,
             // just load the tasks with no parents.
-            'tasks' => ['' => 'None'] + Task::where('task_id', '=', null)->lists('name', 'id')->all(),
+            'tasks' => Task::where('task_id', '=', null)->lists('name', 'id')->all(),
             'users' => User::lists('name', 'id'),
             'projects' => Project::lists('name', 'id'),
         ]);
@@ -66,7 +66,7 @@ class TaskController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|max:255',
-            'description' => '',
+            'description' => 'required|string',
             'priority' => 'int',
             'status' => 'int',
             'parent' => 'int',
@@ -75,12 +75,23 @@ class TaskController extends Controller
             'project' => 'required|int'
         ]);
 
+        /*
+         Here's a hack!
+         We're referencing a foreign key for the parent ID.
+         When there's no parent task, we want to add a row with a "null" entry for "task_id"
+         When we've received the request, null equates to blank/empty, and you can't insert empty into a MySQL foreign key field, you have to insert NULL. This if statement checks to see if the field is empty, and resets it to NULL if it is.
+        */
+        $parent_task = $request->input('parent');
+        if ( empty($parent_task) ) {
+            $parent_task = NULL;
+        }
+
         $task = new Task();
         $task->name = $request->input('name');
         $task->description = $request->input('description');
         $task->priority_id = $request->input('priority');
         $task->status_id = $request->input('status');
-        $task->task_id = $request->input('parent');
+        $task->task_id = $parent_task;
         $task->category_id = $request->input('category');
         $task->user_id = $request->input('user');
         $task->project_id = $request->input('project');
@@ -112,7 +123,48 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $task = Task::find($id);
+
+        /*
+        Define the "old" values for the select list...
+        Only the text fields are set with the correct default values. To set the default values for the select list, we've got some hacking with array shifts to make the current task value for the dropdown appear at the top of the list and therefore be the default option on the edit screen.
+        */
+        $arr_categories = Category::lists('name', 'id')->all();
+        $selected_category = $arr_categories[$task->category_id];
+        array_unshift($arr_categories, $selected_category);
+
+        $arr_priorities = Priority::lists('name', 'id')->all();
+        $selected_priority = $arr_priorities[$task->priority_id];
+        array_unshift($arr_priorities, $selected_priority);
+
+        $arr_statuses = Status::lists('name', 'id')->all();
+        $selected_status = $arr_statuses[$task->status_id];
+        array_unshift($arr_statuses, $selected_status);
+
+        $arr_tasks = Task::where('task_id', '=', null)->lists('name', 'id')->all();
+        // If there's no task at the given index (eg null), don't bother setting a default value.
+        if (array_key_exists($task->task_id, $arr_tasks)) {
+            $selected_task = $arr_tasks[$task->task_id];
+            array_unshift($arr_tasks, $selected_task);
+        }
+
+        $arr_users = User::lists('name', 'id')->all();
+        $selected_user = $arr_users[$task->user_id];
+        array_unshift($arr_users, $selected_user);
+
+        $arr_projects =Project::lists('name', 'id')->all();
+        $selected_project = $arr_projects[$task->project_id];
+        array_unshift($arr_projects, $selected_project);
+
+        return view('tasks.edit', [
+            'categories' => $arr_categories,
+            'priorities' => $arr_priorities,
+            'statuses' => $arr_statuses,
+            'tasks' => $arr_tasks,
+            'users' => $arr_users,
+            'projects' => $arr_projects,
+            'task' => $task
+        ]);
     }
 
     /**
@@ -124,7 +176,42 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'description' => 'required|string',
+            'priority' => 'int',
+            'status' => 'int',
+            'parent' => 'int',
+            'category' => 'int',
+            'user' => 'int',
+            'project' => 'required|int'
+        ]);
+
+        /*
+         Here's a hack!
+         We're referencing a foreign key for the parent ID.
+         When there's no parent task, we want to add a row with a "null" entry for "task_id"
+         When we've received the request, null equates to blank/empty, and you can't insert empty into a MySQL foreign key field, you have to insert NULL. This if statement checks to see if the field is empty, and resets it to NULL if it is.
+        */
+        $parent_task = $request->input('parent');
+        if ( empty($parent_task) ) {
+            $parent_task = NULL;
+        }
+
+        $task = Task::updateOrCreate(['id' => $id]);
+        $task->name = $request->input('name');
+        $task->description = $request->input('description');
+        $task->priority_id = $request->input('priority');
+        $task->status_id = $request->input('status');
+        $task->task_id = $parent_task;
+        $task->category_id = $request->input('category');
+        $task->user_id = $request->input('user');
+        $task->project_id = $request->input('project');
+        $task->save();
+
+        Session::flash('flash_message', 'Task successfully saved!');
+
+        return redirect()->route('tasks.index');
     }
 
     /**

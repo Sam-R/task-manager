@@ -23,20 +23,8 @@
                 Task Manager
             </a>
             <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ route('projects.index') }}">Projects</a></li>
-                        <li><a href="{{ route('projects.create') }}">New Project</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tasks <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ route('tasks.index')  }}">Tasks</a></li>
-                        <li><a href="{{ route('tasks.create')  }}">New Task</a></li>
-                    </ul>
-                </li>
+                <li><a href="{{ route('projects.index') }}">Projects</a></li>
+                <li><a href="{{ route('tasks.index')  }}">Tasks</a></li>
             </ul>
         </nav>
         <div class="container">

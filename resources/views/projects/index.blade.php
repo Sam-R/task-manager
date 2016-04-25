@@ -9,6 +9,8 @@
         @include('errors.errors')
         @include('messages.flash')
 
+        <a href="{{ route('projects.create') }}" class="pull-right btn btn-primary">New Project</a>
+
         <table class="table">
             <thead>
                 <tr>
